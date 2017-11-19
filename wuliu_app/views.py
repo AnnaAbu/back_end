@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from .utils import *
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.sessions.models import Session
 from . import conf
 
 
@@ -121,10 +123,42 @@ def index(request):
         return JsonResponse({'status': 3, 'data': {'error': 'invalid post'}})
 
 
-def login(requset):
+def login1(requset):
     if requset.method == 'POST':
-        pass
+        session_key = __save_session()
+        return JsonResponse({'status': 0, 'data': {'session_key': session_key}})
     elif requset.method == 'GET':
         return JsonResponse({'status': 1, 'data': {'error': 'only post allow'}})
     else:
         return JsonResponse({'status': 3, 'data': {'error': 'invalid post'}})
+
+
+def login2(requset):
+    if requset.method == 'POST':
+        session_key = requset.POST.get('session_key', 'null')
+        __read_session(session_key)
+        return JsonResponse({'status': 0, 'data': {'session_key': 'success'}})
+    elif requset.method == 'GET':
+        return JsonResponse({'status': 1, 'data': {'error': 'only post allow'}})
+    else:
+        return JsonResponse({'status': 3, 'data': {'error': 'invalid post'}})
+
+
+def __save_session():
+    sessionStore = SessionStore()
+    sessionStore["str"] = "hello"  # 字串映射
+    sessionStore["dict"] = {}  # 可以定义多级的字典结构
+    sessionStore["dict"]["key1"] = "value1"
+    sessionStore["dict"]["key2"] = "value2"
+    sessionStore.save()
+    print(sessionStore.session_key)
+    print(sessionStore.keys())
+    session_key = sessionStore.session_key
+    return session_key
+
+
+def __read_session(session_key):
+    session = Session.objects.get(pk=session_key)
+    print(session.session_data)  # 返回session的存储（加密过）
+    print(session.get_decoded())  # 返回session的数据结构（加过解码）
+    print(session.expire_date)

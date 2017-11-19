@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'yuanshuting',
         'USER': 'root',
         'PASSWORD': '13313288898lzt',
-        'HOST': '127.0.0.1',
+        'HOST': '39.106.45.205',
         'PORT': '3306',
     }
 }
