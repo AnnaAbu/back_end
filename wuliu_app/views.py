@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from .utils import *
+from .verify import gene_code
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.sessions.backends.db import SessionStore
@@ -123,10 +124,58 @@ def index(request):
         return JsonResponse({'status': 3, 'data': {'error': 'invalid post'}})
 
 
+def __save_session(**kwargs):
+    sessionStore = SessionStore()
+    # if 'iden_code' in kwargs:
+    #     sessionStore['iden_code'] = kwargs['iden_code']
+    # if 'user_name' in kwargs:
+    #     sessionStore['user_name'] = kwargs['user_name']
+    for key in kwargs.keys():
+        sessionStore[key] = kwargs[key]
+    sessionStore.save()
+    session_key = sessionStore.session_key
+    return session_key
+
+
+def __read_session(session_key):
+    session = Session.objects.get(pk=session_key)
+    print(session.session_data)  # 返回session的存储（加密过）
+    print(session.get_decoded())  # 返回session的数据结构（加过解码）
+    print(session.expire_date)
+
+
+def login_page(request):
+    temp_dict = {}
+    temp_dict = gene_code()
+    session_key = __save_session(iden_code = temp_dict['text'])
+    data = {}
+    data['pic_url'] = temp_dict['pic_url']
+    data['session_key'] = session_key
+    return JsonResponse({'status': 0, 'data': data})
+
+
 def login1(requset):
     if requset.method == 'POST':
-        session_key = __save_session()
-        return JsonResponse({'status': 0, 'data': {'session_key': session_key}})
+        try:
+            session_key = requset.POST.get('session_key')
+            session = __read_session(session_key)
+            data = {}
+            if requset.POST['iden_code'] != session['iden_code']:
+                status = 4
+                data['error'] = 'verification code error'
+            else:
+                sql_select = 'select user_name,password from user where user_name = "' + requset.POST['user_name'] + \
+                             '" and password = "'+ requset.POST['password'] + '"'
+                result_row = sql_execute(sql_select)
+                status = 0
+                if len(result_row):
+                    data['message'] = 'login successfully'
+                else:
+                    data['message'] = 'login failure'
+        except Exception as e:
+            status = 2
+            data = {'error': e}
+        return JsonResponse({'status': status, 'data': data})
     elif requset.method == 'GET':
         return JsonResponse({'status': 1, 'data': {'error': 'only post allow'}})
     else:
@@ -144,21 +193,4 @@ def login2(requset):
         return JsonResponse({'status': 3, 'data': {'error': 'invalid post'}})
 
 
-def __save_session():
-    sessionStore = SessionStore()
-    sessionStore["str"] = "hello"  # 字串映射
-    sessionStore["dict"] = {}  # 可以定义多级的字典结构
-    sessionStore["dict"]["key1"] = "value1"
-    sessionStore["dict"]["key2"] = "value2"
-    sessionStore.save()
-    print(sessionStore.session_key)
-    print(sessionStore.keys())
-    session_key = sessionStore.session_key
-    return session_key
 
-
-def __read_session(session_key):
-    session = Session.objects.get(pk=session_key)
-    print(session.session_data)  # 返回session的存储（加密过）
-    print(session.get_decoded())  # 返回session的数据结构（加过解码）
-    print(session.expire_date)
