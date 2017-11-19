@@ -54,9 +54,9 @@ def gene_code():
     image = image.transform((width + 20, height + 10), Image.AFFINE, (1, -0.3, 0, -0.1, 1, 0), Image.BILINEAR)  # 创建扭曲
     image = image.filter(ImageFilter.EDGE_ENHANCE_MORE)  # 滤镜，边界加强
     pic_name = str(int(time.time())) + '.png'
-    image.save(os.path.join('/home/yuanshuting/back_end/wuliu_app/iden_pic/',pic_name))  # 保存验证码图片
+    image.save(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)),'iden_pic/'),pic_name))  # 保存验证码图片
     gene_code_dict = {}
-    gene_code_dict['pic_url'] = os.path.join('/home/yuanshuting/back_end/wuliu_app/iden_pic/',pic_name)
+    gene_code_dict['pic_url'] = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)),'iden_pic/'),pic_name)
     gene_code_dict['text'] = text
     return gene_code_dict
 
