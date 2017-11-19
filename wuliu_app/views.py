@@ -139,9 +139,9 @@ def __save_session(**kwargs):
 
 def __read_session(session_key):
     session = Session.objects.get(pk=session_key)
-    print(session.session_data)  # 返回session的存储（加密过）
-    print(session.get_decoded())  # 返回session的数据结构（加过解码）
-    print(session.expire_date)
+    #print(session.session_data)  # 返回session的存储（加密过）
+    return session.get_decoded()  # 返回session的数据结构（加过解码）
+    #print(session.expire_date)
 
 
 def login_page(request):
@@ -156,6 +156,7 @@ def login_page(request):
 
 def login1(requset):
     if requset.method == 'POST':
+        #import ipdb; ipdb.set_trace()
         try:
             session_key = requset.POST.get('session_key')
             session = __read_session(session_key)
@@ -172,6 +173,7 @@ def login1(requset):
                     data['message'] = 'login successfully'
                 else:
                     data['message'] = 'login failure'
+
         except Exception as e:
             status = 2
             data = {'error': e}
