@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from . import conf
+import os
 
 
 def __op_add(src_dict, files):
@@ -147,7 +148,7 @@ def __read_session(session_key):
 def login_page(request):
     temp_dict = {}
     temp_dict = gene_code()
-    session_key = __save_session(iden_code = temp_dict['text'])
+    session_key = __save_session(iden_code = temp_dict['text'],pic_url = temp_dict['pic_url'])
     data = {}
     data['pic_url'] = temp_dict['pic_url']
     data['session_key'] = session_key
@@ -161,6 +162,7 @@ def login1(requset):
             session_key = requset.POST.get('session_key')
             session = __read_session(session_key)
             data = {}
+            #注意验证码区分大小写
             if requset.POST['iden_code'] != session['iden_code']:
                 status = 4
                 data['error'] = 'verification code error'
@@ -173,7 +175,7 @@ def login1(requset):
                     data['message'] = 'login successfully'
                 else:
                     data['message'] = 'login failure'
-
+            os.remove(session['pic_url'])
         except Exception as e:
             status = 2
             data = {'error': e}
