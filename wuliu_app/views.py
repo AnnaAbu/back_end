@@ -88,7 +88,6 @@ def __lay_list(src_dict, des_list):
 
 
 def index(request):
-    # import ipdb; ipdb.set_trace()
     if request.method == 'GET':
         return JsonResponse({'status': 1, 'data': {'error': 'only post allow'}})
     elif request.method == 'POST':

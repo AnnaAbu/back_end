@@ -67,5 +67,5 @@ def get_select_sql(des_list, show_num, filter_dict, categories, table='article')
 
 
 def get_delete_sql(del_id, table='article'):
-    sql_delete = 'delete from' + table + 'where id=' + str(del_id)
+    sql_delete = 'delete from ' + table + ' where id=' + str(del_id)
     return sql_delete
