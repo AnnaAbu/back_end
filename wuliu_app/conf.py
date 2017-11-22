@@ -5,7 +5,7 @@ VALID_CATEGORIES = ['carousel','introduction','research',
                     'kyxm','kycg','xssl','hylt',
                     'sztd','xsdtr','xstd',
                     'syzb','syxm']
-VALID_CATEGORIES = ['homepage','sysgk','xwdt','xshd','yjll','syzy']
+VALID_PART = ['homepage','sysgk','xwdt','xshd','yjll','syzy']
 CONF_TRUE = 'true'
 CONF_FALSE = 'false'
 CONF_NULL = 'null'

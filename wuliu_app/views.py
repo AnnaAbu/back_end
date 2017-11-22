@@ -93,6 +93,7 @@ def index(request):
     elif request.method == 'POST':
         branch = request.POST.get('branch', 'null')
         try:
+            #import ipdb;ipdb.set_trace()
             if branch == 'op_add':
                 data = __op_add(request.POST, request.FILES)
             elif branch == 'op_delete':
@@ -107,6 +108,7 @@ def index(request):
                 data = __op_select(request.POST, ['id', 'title', 'content', 'timestamp', 'part', 'category'],
                                    ['id'])
             elif branch == 'lay_list':
+                import ipdb;ipdb.set_trace()
                 data = __lay_list(request.POST, ['id', 'title', 'timestamp', 'part', 'category'])
             elif branch == 'lay_news':
                 data = __op_select(request.POST, ['id', 'title', 'content', 'image_url', 'part', 'category'],
