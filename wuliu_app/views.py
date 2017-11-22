@@ -145,14 +145,16 @@ def __read_session(session_key):
 
 
 def login_page(request):
-    temp_dict = {}
-    temp_dict = gene_code()
-    session_key = __save_session(iden_code = temp_dict['text'],pic_url = temp_dict['pic_url'])
-    data = {}
-    data['pic_url'] = temp_dict['pic_url']
-    data['session_key'] = session_key
-    return JsonResponse({'status': 0, 'data': data})
-
+    try:
+        temp_dict = {}
+        temp_dict = gene_code()
+        session_key = __save_session(iden_code = temp_dict['text'],pic_url = temp_dict['pic_url'])
+        data = {}
+        data['pic_url'] = temp_dict['pic_url']
+        data['session_key'] = session_key
+        return JsonResponse({'status': 0, 'data': data})
+    finally:
+        os.remove(session['pic_url'])
 
 def login1(requset):
     if requset.method == 'POST':
@@ -174,7 +176,6 @@ def login1(requset):
                     data['message'] = 'login successfully'
                 else:
                     data['message'] = 'login failure'
-            os.remove(session['pic_url'])
         except Exception as e:
             status = 2
             data = {'error': e}
