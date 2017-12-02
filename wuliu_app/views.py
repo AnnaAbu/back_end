@@ -30,6 +30,7 @@ def __op_update(src_dict, files):
 
 def __op_select(src_dict, des_list, filter_list):
     categories = []
+    #import ipdb;ipdb.set_trace()
     show_num = src_dict.get('num', '1')
     if 'category' in filter_list:
         filter_list.remove('category')
@@ -69,11 +70,11 @@ def __lay_list(src_dict, des_list):
             if category not in conf.VALID_CATEGORIES:
                 raise Exception('invalid category')
             sql_category += 'category ="' + category + '" or '
-            sql_category = sql_category[:-3]
+        sql_category = sql_category[:-3]
         if average == conf.CONF_TRUE:
             sql = " select " + desc_str + " from article as a where (select count(*) from" + \
                   " article as b where b.category=a.category and b.id>=a.id)<= " + str(
-                num) + " and( " + sql_category + ")"
+                num) + " and (" + sql_category + ")"
         else:
             sql = "select " + desc_str + " from article where " + sql_category + " limit " \
                   + str(start) + ', ' + num
@@ -108,7 +109,7 @@ def index(request):
                 data = __op_select(request.POST, ['id', 'title', 'content', 'timestamp', 'part', 'category'],
                                    ['id'])
             elif branch == 'lay_list':
-                import ipdb;ipdb.set_trace()
+                #import ipdb;ipdb.set_trace()
                 data = __lay_list(request.POST, ['id', 'title', 'timestamp', 'part', 'category'])
             elif branch == 'lay_news':
                 data = __op_select(request.POST, ['id', 'title', 'content', 'image_url', 'part', 'category'],

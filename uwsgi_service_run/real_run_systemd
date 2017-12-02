@@ -1,0 +1,9 @@
+#! /bin/bash
+ulimit -c 1000000
+ulimit -n 50000
+
+export DJANGO_SETTINGS_MODULE="wuliu_project.settings"
+cd /opt/tiger/back_end
+prog_name="back_end_service"
+echo "`date '+%Y-%m-%d %H:%M:%S'`  `hostname` : $prog_name start" >> /var/log/tiger/${prog_name}_svc.log
+exec uwsgi uwsgi.ini  1>/dev/null 2>>/var/log/tiger/${prog_name}_uwsgi_err.log

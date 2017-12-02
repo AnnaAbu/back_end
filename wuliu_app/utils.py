@@ -62,7 +62,7 @@ def get_select_sql(des_list, show_num, filter_dict, categories, table='article')
         if not temp_sql.endswith(')'):
             temp_sql = temp_sql[:-4]
             sql_select += temp_sql
-    sql_select += 'order by id desc limit ' + str(show_num)
+    sql_select += ' order by id desc limit ' + str(show_num)
     return sql_select
 
 
